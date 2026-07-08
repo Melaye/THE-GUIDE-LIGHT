@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Guide Light — Career Pathway Advisor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #16213E;
+    --bg-deep: #0F1830;
+    --card: #FAF6EC;
+    --card-soft: #F1EADB;
+    --gold: #E8A33D;
+    --gold-dark: #C9821F;
+    --teal: #2F9E7D;
+    --ink: #1B2A4A;
+    --ink-soft: #55617D;
+    --white: #FFFFFF;
+    --font-display: 'Fraunces', serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background: radial-gradient(ellipse at top, #1D2C52 0%, var(--bg) 45%, var(--bg-deep) 100%);
+    font-family: var(--font-body);
+    color: var(--white);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    padding: 28px 16px 60px;
+  }
+  *:focus-visible{
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+  }
+
+  .app{
+    width:100%;
+    max-width: 640px;
+  }
+
+  /* ---------- Header / stepper ---------- */
+  .brand{
+    text-align:center;
+    margin-bottom: 22px;
+  }
+  .brand-mark{
+    font-family: var(--font-mono);
+    letter-spacing: 0.28em;
+    font-size: 11px;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+  .brand h1{
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 30px;
+    margin: 6px 0 0;
+  }
+  .brand p{
+    font-size: 13px;
+    color: #B9C2DC;
+    margin: 4px 0 0;
+  }
+
+  .stepper{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap: 6px;
+    margin: 22px 0 30px;
+  }
+  .step-dot{
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.25);
+    display:flex; align-items:center; justify-content:center;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: #B9C2DC;
+    background: rgba(255,255,255,0.03);
+    transition: all .3s ease;
+  }
+  .step-dot.active{
+    border-color: var(--gold);
+    color: var(--bg);
+    background: var(--gold);
+    font-weight:600;
+  }
+  .step-dot.done{
+    border-color: var(--teal);
+    color: var(--teal);
+  }
+  .step-line{
+    width: 26px; height: 1.5px;
+    background: rgba(255,255,255,0.18);
+  }
+  .step-line.done{ background: var(--teal); }
+
+  /* ---------- Card ---------- */
+  .card{
+    background: var(--card);
+    color: var(--ink);
+    border-radius: 18px;
+    padding: 30px 26px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+    animation: rise .45s ease both;
+  }
+  @keyframes rise{
+    from{ opacity:0; transform: translateY(14px); }
+    to{ opacity:1; transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .card{ animation:none; }
+  }
+
+  .card h2{
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight:600;
+    margin: 0 0 6px;
+  }
+  .card .sub{
+    color: var(--ink-soft);
+    font-size: 14px;
+    margin: 0 0 22px;
+    line-height:1.5;
+  }
+
+  /* ---------- Welcome screen ---------- */
+  .welcome-art{
+    display:flex; justify-content:center; margin: 6px 0 20px;
+  }
+  .welcome-btn{
+    width:100%;
+  }
+
+  /* ---------- Subject / hobby groups ---------- */
+  .group-title{
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold-dark);
+    margin: 20px 0 10px;
+  }
+  .group-title:first-of-type{ margin-top:0; }
+
+  .chip-grid{
+    display:flex;
+    flex-wrap:wrap;
+    gap: 8px;
+  }
+  .chip{
+    border: 1.5px solid #D8CFB8;
+    background: var(--white);
+    color: var(--ink);
+    padding: 9px 14px;
+    border-radius: 999px;
+    font-size: 13.5px;
+    font-weight:500;
+    cursor:pointer;
+    transition: all .15s ease;
+    user-select:none;
+  }
+  .chip:hover{ border-color: var(--gold); }
+  .chip.selected{
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--white);
+  }
+  .chip.selected::before{
+    content: "✓ ";
+    color: var(--gold);
+  }
+
+  .counter{
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-top: 16px;
+  }
+  .counter b{ color: var(--ink); }
+
+  textarea{
+    width:100%;
+    border: 1.5px solid #D8CFB8;
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    color: var(--ink);
+    resize: vertical;
+    min-height: 70px;
+    margin-top: 18px;
+  }
+  textarea:focus{ border-color: var(--gold); }
+  label.field-label{
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold-dark);
+  }
+
+  /* ---------- Buttons ---------- */
+  .btn-row{
+    display:flex;
+    gap: 10px;
+    margin-top: 26px;
+  }
+  .btn{
+    font-family: var(--font-body);
+    font-weight:600;
+    font-size: 14.5px;
+    padding: 13px 20px;
+    border-radius: 12px;
+    border: none;
+    cursor:pointer;
+    transition: transform .12s ease, opacity .12s ease;
+  }
+  .btn:active{ transform: scale(0.98); }
+  .btn:disabled{ opacity:0.4; cursor:not-allowed; }
+  .btn-primary{
+    background: var(--ink);
+    color: var(--white);
+    flex:1;
+  }
+  .btn-primary:hover:not(:disabled){ background: #24365F; }
+  .btn-ghost{
+    background: transparent;
+    color: var(--ink-soft);
+    border: 1.5px solid #D8CFB8;
+  }
+  .btn-gold{
+    background: var(--gold);
+    color: var(--ink);
+    width:100%;
+  }
+  .btn-gold:hover:not(:disabled){ background: var(--gold-dark); color: var(--white); }
+
+  /* ---------- Signpost fork graphic (signature element) ---------- */
+  .fork-wrap{
+    display:flex;
+    justify-content:center;
+    margin: 4px 0 8px;
+  }
+  .fork-wrap svg{ width: 100%; max-width: 420px; height: auto; }
+
+  /* ---------- Result cards ---------- */
+  .result-card{
+    border: 1.5px solid #E3DAC4;
+    border-radius: 14px;
+    padding: 18px 18px 20px;
+    margin-bottom: 14px;
+    background: var(--white);
+  }
+  .result-rank{
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--teal);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .result-card h3{
+    font-family: var(--font-display);
+    font-size: 20px;
+    margin: 4px 0 8px;
+  }
+  .result-meta{
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    margin-bottom: 10px;
+  }
+  .result-meta strong{ color: var(--ink); }
+  .tag-row{
+    display:flex; flex-wrap:wrap; gap:6px; margin: 8px 0 10px;
+  }
+  .tag{
+    font-family: var(--font-mono);
+    font-size: 11px;
+    background: var(--card-soft);
+    color: var(--ink);
+    padding: 4px 9px;
+    border-radius: 6px;
+  }
+  .deepen-btn{
+    background: none;
+    border: 1.5px solid var(--ink);
+    color: var(--ink);
+    font-size: 13px;
+    font-weight:600;
+    padding: 8px 14px;
+    border-radius: 10px;
+    cursor:pointer;
+    margin-top: 4px;
+  }
+  .deepen-btn:hover{ background: var(--ink); color: var(--white); }
+  .deepen-btn:disabled{ opacity: 0.5; cursor: wait; }
+
+  .deep-advice{
+    margin-top: 12px;
+    padding: 14px 14px;
+    background: #F4F0E4;
+    border-left: 3px solid var(--gold);
+    border-radius: 8px;
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: var(--ink);
+    white-space: pre-wrap;
+  }
+  .deep-advice.loading{
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+
+  .footer-note{
+    text-align:center;
+    color: #8590AC;
+    font-size: 12px;
+    margin-top: 24px;
+    line-height: 1.6;
+  }
+
+  /* ---------- Feedback ---------- */
+  .feedback-fab{
+    text-decoration: none;
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    background: var(--gold);
+    color: var(--ink);
+    border: none;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 13.5px;
+    padding: 11px 18px;
+    border-radius: 999px;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.35);
+    cursor: pointer;
+    z-index: 40;
+    display:flex;
+    align-items:center;
+    gap: 6px;
+  }
+  .feedback-fab:hover{ background: var(--gold-dark); color: var(--white); }
+
+  .feedback-overlay{
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 24, 48, 0.72);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index: 50;
+    padding: 20px;
+  }
+  .feedback-overlay.open{ display:flex; }
+  .feedback-modal{
+    background: var(--card);
+    color: var(--ink);
+    border-radius: 16px;
+    padding: 24px 22px;
+    width: 100%;
+    max-width: 420px;
+    animation: rise .3s ease both;
+  }
+  .feedback-modal h3{
+    font-family: var(--font-display);
+    font-size: 19px;
+    margin: 0 0 6px;
+  }
+  .feedback-modal p.sub{ margin-bottom: 14px; }
+  .feedback-modal textarea{ min-height: 90px; }
+  .feedback-modal .btn-row{ margin-top: 16px; }
+  .feedback-thanks{
+    font-size: 14px;
+    color: var(--teal);
+    font-weight: 600;
+    margin-top: 10px;
+    display:none;
+  }
+  .feedback-thanks.show{ display:block; }
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+
+<a class="feedback-fab" id="feedbackFab" href="https://forms.gle/xbrVNyGksY5iqQma6" target="_blank" rel="noopener noreferrer">💬 Feedback</a>
+
+<script>
+/* ============================================================
+   DATA: subjects grouped by stream
+   ============================================================ */
+const SUBJECT_GROUPS = [
+  { title: "Sciences", items: ["Mathematics","Physics","Chemistry","Biology","Agricultural Science","Further Mathematics","Health Science"] },
+  { title: "Arts", items: ["English Language","Literature-in-English","Government","History","CRS / IRS","French","Fine Arts","Music"] },
+  { title: "Commercial & Social Science", items: ["Economics","Commerce","Financial Accounting","Geography","Civic Education"] }
+];
+
+const HOBBY_ITEMS = [
+  "Reading","Writing & storytelling","Building or fixing things","Coding & computers",
+  "Drawing & art","Music","Public speaking & debate","Caring for people","Sports",
+  "Numbers & puzzles","Business & trading","Farming & nature","Leadership",
+  "Acting & drama","Science experiments","Volunteering"
+];
+
+/* ============================================================
+   DATA: career pathways
+   subjectTags / hobbyTags are used for scoring against selections
+   ============================================================ */
+const CAREERS = [
+  { name:"Medicine and Surgery", subjectTags:["Biology","Chemistry","Physics","Mathematics"], hobbyTags:["Caring for people","Science experiments","Numbers & puzzles"],
+    waec:"English Language, Mathematics, Biology, Chemistry, Physics", jamb:"Biology, Chemistry, Physics",
+    institutions:"University of Ibadan, University of Lagos, Obafemi Awolowo University, University of Nigeria Nsukka",
+    steps:"Join your school's science club, volunteer at a health post if possible, and build strong grades in Biology and Chemistry from SS1. Medicine is highly competitive, so consistent WAEC and JAMB scores matter a lot." },
+
+  { name:"Nursing", subjectTags:["Biology","Chemistry","Physics","Mathematics"], hobbyTags:["Caring for people","Volunteering","Science experiments"],
+    waec:"English Language, Mathematics, Biology, Chemistry, Physics", jamb:"Biology, Chemistry, Physics",
+    institutions:"University of Ibadan, Lagos State University College of Medicine, Ahmadu Bello University",
+    steps:"Look for community health volunteering opportunities, and keep grades strong in Biology and Chemistry. Nursing schools and university programs both accept qualified candidates, so explore both routes." },
+
+  { name:"Pharmacy", subjectTags:["Chemistry","Biology","Physics","Mathematics"], hobbyTags:["Science experiments","Numbers & puzzles","Caring for people"],
+    waec:"English Language, Mathematics, Biology, Chemistry, Physics", jamb:"Chemistry, Biology, Physics",
+    institutions:"University of Lagos, University of Benin, Ahmadu Bello University",
+    steps:"Pharmacy demands strong Chemistry. Practice past questions in Chemistry and Biology, and look into pharmacy technician shadowing if any pharmacy is nearby." },
+
+  { name:"Law", subjectTags:["English Language","Literature-in-English","Government","History","CRS / IRS"], hobbyTags:["Public speaking & debate","Writing & storytelling","Leadership"],
+    waec:"English Language, Literature-in-English, Government, one other Arts/Social Science subject", jamb:"Literature-in-English, Government, CRS/IRS or History",
+    institutions:"University of Lagos, University of Ibadan, Ahmadu Bello University, Nnamdi Azikiwe University",
+    steps:"Join your school's debate or Model United Nations club. Read widely and practice argumentative writing. Strong English Language and Literature grades are essential." },
+
+  { name:"Accounting", subjectTags:["Mathematics","Financial Accounting","Economics","Commerce"], hobbyTags:["Numbers & puzzles","Business & trading"],
+    waec:"English Language, Mathematics, Financial Accounting, Economics", jamb:"Mathematics, Economics, and one of Accounting/Commerce",
+    institutions:"University of Lagos, University of Nigeria Nsukka, Ahmadu Bello University, Covenant University",
+    steps:"Get comfortable with financial accounting basics early, and look for opportunities to help manage small budgets (school clubs, family business) to build practical number sense." },
+
+  { name:"Banking and Finance", subjectTags:["Mathematics","Economics","Financial Accounting","Commerce"], hobbyTags:["Numbers & puzzles","Business & trading","Leadership"],
+    waec:"English Language, Mathematics, Economics, Financial Accounting", jamb:"Mathematics, Economics, Accounting/Commerce",
+    institutions:"University of Lagos, Babcock University, University of Nigeria Nsukka",
+    steps:"Follow basic financial news, and practice budgeting for yourself or family. Strong Mathematics and Economics grades open this path." },
+
+  { name:"Economics", subjectTags:["Mathematics","Economics","Government","Geography"], hobbyTags:["Numbers & puzzles","Business & trading","Public speaking & debate"],
+    waec:"English Language, Mathematics, Economics, Government", jamb:"Mathematics, Economics, and one Social Science subject",
+    institutions:"University of Ibadan, University of Lagos, Ahmadu Bello University",
+    steps:"Read about local and global economic issues, and practice interpreting graphs and data. This builds the analytical thinking Economics rewards." },
+
+  { name:"Software Engineering / Computer Science", subjectTags:["Mathematics","Physics","Further Mathematics"], hobbyTags:["Coding & computers","Numbers & puzzles","Building or fixing things"],
+    waec:"English Language, Mathematics, Physics, one other Science subject", jamb:"Mathematics, Physics, Chemistry/Further Mathematics",
+    institutions:"University of Lagos, Covenant University, Federal University of Technology Akure, University of Ibadan",
+    steps:"Start free beginner coding resources (many are accessible on a basic smartphone). Join or start a computer/coding club at school. Strong Mathematics is the real foundation here." },
+
+  { name:"Electrical/Electronic Engineering", subjectTags:["Physics","Mathematics","Further Mathematics","Chemistry"], hobbyTags:["Building or fixing things","Numbers & puzzles","Science experiments"],
+    waec:"English Language, Mathematics, Physics, Chemistry", jamb:"Mathematics, Physics, Chemistry",
+    institutions:"University of Lagos, Ahmadu Bello University, Federal University of Technology Minna",
+    steps:"Practice basic circuit ideas if you can access materials, and keep Physics and Mathematics as your strongest subjects. Technical drawing is a helpful extra if offered." },
+
+  { name:"Civil Engineering", subjectTags:["Physics","Mathematics","Chemistry"], hobbyTags:["Building or fixing things","Numbers & puzzles"],
+    waec:"English Language, Mathematics, Physics, Chemistry", jamb:"Mathematics, Physics, Chemistry",
+    institutions:"University of Lagos, Ahmadu Bello University, Federal University of Technology Akure",
+    steps:"Look at how buildings and roads around you are constructed. Strong Physics and Mathematics grades, plus Technical Drawing if available, will help." },
+
+  { name:"Architecture", subjectTags:["Physics","Mathematics","Fine Arts"], hobbyTags:["Drawing & art","Building or fixing things","Numbers & puzzles"],
+    waec:"English Language, Mathematics, Physics, one of Fine Arts/Chemistry/Geography", jamb:"Mathematics, Physics, and Fine Arts/Geography",
+    institutions:"University of Lagos, Ahmadu Bello University, Covenant University",
+    steps:"Practice sketching buildings and spaces around you. Keep both Mathematics and an art-related subject strong, since Architecture blends both." },
+
+  { name:"Mass Communication / Journalism", subjectTags:["English Language","Literature-in-English","Government","History"], hobbyTags:["Writing & storytelling","Public speaking & debate","Music"],
+    waec:"English Language, Literature-in-English, Government, one other Arts subject", jamb:"Literature-in-English, Government, CRS/IRS or History",
+    institutions:"University of Lagos, University of Nigeria Nsukka, Bayero University Kano, Babcock University",
+    steps:"Start writing regularly, even short pieces on your phone, and read newspapers or news sites to build your voice. Joining your school press club is a strong first step." },
+
+  { name:"Education", subjectTags:["English Language","Mathematics","Government","CRS / IRS"], hobbyTags:["Caring for people","Leadership","Volunteering","Public speaking & debate"],
+    waec:"English Language, Mathematics, and two subjects related to your intended teaching area", jamb:"Varies by teaching subject combination",
+    institutions:"University of Ibadan, University of Nigeria Nsukka, Tai Solarin University of Education",
+    steps:"Look for chances to tutor younger students or lead study groups. Education rewards patience and clear communication, both worth practicing now." },
+
+  { name:"Agricultural Science", subjectTags:["Agricultural Science","Biology","Chemistry","Mathematics"], hobbyTags:["Farming & nature","Science experiments","Business & trading"],
+    waec:"English Language, Mathematics, Biology, Chemistry, Agricultural Science", jamb:"Chemistry, Biology, Agricultural Science/Physics",
+    institutions:"University of Ibadan, Federal University of Agriculture Abeokuta, Ahmadu Bello University",
+    steps:"If you have access to any farming activity at home or school, get hands-on. This field increasingly blends science with business, so both matter." },
+
+  { name:"Estate Management", subjectTags:["Mathematics","Economics","Geography","Financial Accounting"], hobbyTags:["Numbers & puzzles","Business & trading","Building or fixing things"],
+    waec:"English Language, Mathematics, Economics, Geography/Financial Accounting", jamb:"Mathematics, Economics, Geography/Accounting",
+    institutions:"University of Lagos, Obafemi Awolowo University, Ahmadu Bello University",
+    steps:"Pay attention to how property and land values work around you. Strong Mathematics and Economics grades support this path well." },
+
+  { name:"International Relations", subjectTags:["Government","History","English Language","Economics"], hobbyTags:["Public speaking & debate","Leadership","Reading"],
+    waec:"English Language, Government, History, Economics", jamb:"Government, History/Economics, Literature-in-English",
+    institutions:"Obafemi Awolowo University, University of Ibadan, Babcock University",
+    steps:"Follow world news and join debate or Model UN clubs if available. Strong Government and History grades build the right foundation." },
+
+  { name:"Psychology", subjectTags:["Biology","English Language","Government","Mathematics"], hobbyTags:["Caring for people","Reading","Volunteering"],
+    waec:"English Language, Mathematics, Biology, one other Science/Social Science subject", jamb:"Biology, and two of Chemistry/Physics/Mathematics/Economics",
+    institutions:"University of Lagos, University of Ibadan, Covenant University",
+    steps:"Practice listening closely to people around you and notice patterns in behaviour. Strong Biology alongside good English Language grades will help." },
+
+  { name:"Fine and Applied Arts", subjectTags:["Fine Arts","English Language","Literature-in-English"], hobbyTags:["Drawing & art","Music","Acting & drama"],
+    waec:"English Language, Fine Arts, and two other relevant subjects", jamb:"Fine Arts, English Language, and one related subject",
+    institutions:"University of Nigeria Nsukka, Obafemi Awolowo University, Yaba College of Technology",
+    steps:"Keep a sketchbook or portfolio of your work, however simple. Consistent practice matters more than talent alone in building an art portfolio." },
+
+  { name:"Business Administration", subjectTags:["Mathematics","Economics","Commerce","Financial Accounting"], hobbyTags:["Business & trading","Leadership","Numbers & puzzles"],
+    waec:"English Language, Mathematics, Economics, Commerce/Accounting", jamb:"Mathematics, Economics, Accounting/Commerce",
+    institutions:"University of Lagos, Covenant University, Ahmadu Bello University",
+    steps:"Look for small ways to practice managing something, a class project, a small trade, or a club budget. This builds real organisational instinct early." }
+];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+const state = {
+  step: 0,
+  subjects: new Set(),
+  hobbies: new Set(),
+  notes: "",
+  results: []
+};
+
+const root = document.getElementById('app');
+
+/* ============================================================
+   SCORING ENGINE
+   ============================================================ */
+function computeResults(){
+  const scored = CAREERS.map(c => {
+    let score = 0;
+    c.subjectTags.forEach(s => { if(state.subjects.has(s)) score += 2; });
+    c.hobbyTags.forEach(h => { if(state.hobbies.has(h)) score += 1.5; });
+    return { career: c, score };
+  });
+  scored.sort((a,b) => b.score - a.score);
+  return scored.filter(s => s.score > 0).slice(0,3).map(s => s.career).length
+    ? scored.filter(s => s.score > 0).slice(0,3).map(s => s.career)
+    : scored.slice(0,3).map(s => s.career);
+}
+
+/* ============================================================
+   RENDER: stepper
+   ============================================================ */
+function renderStepper(activeIndex){
+  const labels = ["Subjects","Interests","Results"];
+  let html = '<div class="stepper">';
+  labels.forEach((label, i) => {
+    const cls = i < activeIndex ? 'done' : (i === activeIndex ? 'active' : '');
+    html += `<div class="step-dot ${cls}" title="${label}">${i < activeIndex ? '✓' : i+1}</div>`;
+    if(i < labels.length - 1){
+      html += `<div class="step-line ${i < activeIndex ? 'done' : ''}"></div>`;
+    }
+  });
+  html += '</div>';
+  return html;
+}
+
+/* ============================================================
+   RENDER: screens
+   ============================================================ */
+function renderWelcome(){
+  root.innerHTML = `
+    <div class="brand">
+      <div class="brand-mark">The Guide Light</div>
+      <h1>Find your career pathway</h1>
+      <p>A few quick questions about what you enjoy — then we'll suggest pathways that fit you.</p>
+    </div>
+    <div class="card">
+      <div class="welcome-art">
+        <svg width="120" height="90" viewBox="0 0 120 90" fill="none">
+          <path d="M60 88 L60 55" stroke="#C9821F" stroke-width="4" stroke-linecap="round"/>
+          <path d="M60 55 L20 30" stroke="#C9821F" stroke-width="4" stroke-linecap="round"/>
+          <path d="M60 55 L100 30" stroke="#C9821F" stroke-width="4" stroke-linecap="round"/>
+          <path d="M60 40 L60 30" stroke="#2F9E7D" stroke-width="4" stroke-linecap="round"/>
+          <circle cx="20" cy="26" r="6" fill="#1B2A4A"/>
+          <circle cx="100" cy="26" r="6" fill="#1B2A4A"/>
+          <circle cx="60" cy="26" r="6" fill="#1B2A4A"/>
+          <circle cx="60" cy="88" r="5" fill="#E8A33D"/>
+        </svg>
+      </div>
+      <h2>Every subject and hobby is a signpost</h2>
+      <p class="sub">Tell us what you're good at and what you love doing outside class. In two minutes you'll get pathways worth exploring, and real next steps for WAEC, JAMB, and beyond.</p>
+      <button class="btn btn-gold welcome-btn" id="startBtn">Let's begin</button>
+    </div>
+    <p class="footer-note">Built for Nigerian secondary school students &mdash; grounded in WAEC/NECO subjects and JAMB pathways.</p>
+  `;
+  document.getElementById('startBtn').onclick = () => { state.step = 1; render(); };
+}
+
+function renderSubjects(){
+  root.innerHTML = `
+    <div class="brand">
+      <div class="brand-mark">The Guide Light</div>
+      <h1>Your favourite subjects</h1>
+    </div>
+    ${renderStepper(0)}
+    <div class="card">
+      <h2>What do you enjoy studying?</h2>
+      <p class="sub">Pick as many as apply. Include subjects you're strong in, or simply enjoy, even if the grade isn't perfect yet.</p>
+      <div id="subjectGroups"></div>
+      <div class="counter"><b id="subjCount">0</b> subject(s) selected</div>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="nextBtn" disabled>Continue</button>
+      </div>
+    </div>
+  `;
+  const container = document.getElementById('subjectGroups');
+  SUBJECT_GROUPS.forEach(group => {
+    const groupEl = document.createElement('div');
+    groupEl.innerHTML = `<div class="group-title">${group.title}</div>`;
+    const grid = document.createElement('div');
+    grid.className = 'chip-grid';
+    group.items.forEach(item => {
+      const chip = document.createElement('div');
+      chip.className = 'chip' + (state.subjects.has(item) ? ' selected' : '');
+      chip.textContent = item;
+      chip.onclick = () => {
+        if(state.subjects.has(item)) state.subjects.delete(item); else state.subjects.add(item);
+        chip.classList.toggle('selected');
+        updateSubjCount();
+      };
+      grid.appendChild(chip);
+    });
+    groupEl.appendChild(grid);
+    container.appendChild(groupEl);
+  });
+  function updateSubjCount(){
+    document.getElementById('subjCount').textContent = state.subjects.size;
+    document.getElementById('nextBtn').disabled = state.subjects.size < 2;
+  }
+  updateSubjCount();
+  document.getElementById('nextBtn').onclick = () => { state.step = 2; render(); };
+}
+
+function renderHobbies(){
+  root.innerHTML = `
+    <div class="brand">
+      <div class="brand-mark">The Guide Light</div>
+      <h1>Your hobbies &amp; interests</h1>
+    </div>
+    ${renderStepper(1)}
+    <div class="card">
+      <h2>What do you enjoy outside class?</h2>
+      <p class="sub">Choose what genuinely interests you. There's no wrong answer here.</p>
+      <div class="chip-grid" id="hobbyGrid"></div>
+      <label class="field-label" for="notesArea" style="display:block; margin-top:20px;">Anything else about you? (optional)</label>
+      <textarea id="notesArea" placeholder="E.g. I like helping my siblings with homework, or I've always been curious about how phones work..."></textarea>
+      <div class="counter"><b id="hobbyCount">0</b> interest(s) selected</div>
+      <div class="btn-row">
+        <button class="btn btn-ghost" id="backBtn">Back</button>
+        <button class="btn btn-primary" id="nextBtn" disabled>See my pathways</button>
+      </div>
+    </div>
+  `;
+  const grid = document.getElementById('hobbyGrid');
+  HOBBY_ITEMS.forEach(item => {
+    const chip = document.createElement('div');
+    chip.className = 'chip' + (state.hobbies.has(item) ? ' selected' : '');
+    chip.textContent = item;
+    chip.onclick = () => {
+      if(state.hobbies.has(item)) state.hobbies.delete(item); else state.hobbies.add(item);
+      chip.classList.toggle('selected');
+      updateHobbyCount();
+    };
+    grid.appendChild(chip);
+  });
+  const notesArea = document.getElementById('notesArea');
+  notesArea.value = state.notes;
+  notesArea.oninput = (e) => { state.notes = e.target.value; };
+
+  function updateHobbyCount(){
+    document.getElementById('hobbyCount').textContent = state.hobbies.size;
+    document.getElementById('nextBtn').disabled = state.hobbies.size < 2;
+  }
+  updateHobbyCount();
+  document.getElementById('backBtn').onclick = () => { state.step = 1; render(); };
+  document.getElementById('nextBtn').onclick = () => {
+    state.results = computeResults();
+    state.step = 3;
+    render();
+  };
+}
+
+function renderResults(){
+  const n = state.results.length;
+  const forkSVG = buildForkSVG(n);
+
+  root.innerHTML = `
+    <div class="brand">
+      <div class="brand-mark">The Guide Light</div>
+      <h1>Your pathways</h1>
+      <p>Based on what you told us, here's where your road could lead.</p>
+    </div>
+    ${renderStepper(2)}
+    <div class="card">
+      <div class="fork-wrap">${forkSVG}</div>
+      <h2>Top matches for you</h2>
+      <p class="sub">These aren't the only options, but they're a strong place to start exploring.</p>
+      <div id="resultsList"></div>
+      <div class="btn-row">
+        <button class="btn btn-ghost" id="restartBtn">Start over</button>
+      </div>
+    </div>
+    <p class="footer-note">Tap "Get deeper advice" on any pathway for advice written specifically for what you shared.</p>
+  `;
+
+  const list = document.getElementById('resultsList');
+  state.results.forEach((career, idx) => {
+    const el = document.createElement('div');
+    el.className = 'result-card';
+    el.innerHTML = `
+      <div class="result-rank">Pathway ${idx + 1}</div>
+      <h3>${career.name}</h3>
+      <div class="result-meta"><strong>WAEC/NECO subjects:</strong> ${career.waec}</div>
+      <div class="result-meta"><strong>JAMB combination:</strong> ${career.jamb}</div>
+      <div class="result-meta"><strong>Nigerian institutions to explore:</strong> ${career.institutions}</div>
+      <div class="tag-row">${career.hobbyTags.filter(h => state.hobbies.has(h)).map(h => `<span class="tag">${h}</span>`).join('')}</div>
+      <div class="result-meta"><strong>Next steps:</strong> ${career.steps}</div>
+      <button class="deepen-btn" data-idx="${idx}">Get deeper advice ✨</button>
+      <div class="deep-advice-slot"></div>
+    `;
+    list.appendChild(el);
+    el.querySelector('.deepen-btn').onclick = (e) => getDeepAdvice(career, e.target, el.querySelector('.deep-advice-slot'));
+  });
+
+  document.getElementById('restartBtn').onclick = () => {
+    state.step = 0; state.subjects.clear(); state.hobbies.clear(); state.notes = ""; state.results = [];
+    render();
+  };
+}
+
+function buildForkSVG(n){
+  const width = 420, height = 130;
+  const endpoints = n === 3 ? [60, 210, 360] : n === 2 ? [110, 310] : [210];
+  let paths = '';
+  let nodes = '';
+  endpoints.forEach(x => {
+    paths += `<path d="M210 128 L210 80 L${x} 30" stroke="#C9821F" stroke-width="4" stroke-linecap="round" fill="none"/>`;
+    nodes += `<circle cx="${x}" cy="26" r="6" fill="#1B2A4A"/>`;
+  });
+  return `<svg viewBox="0 0 ${width} ${height}" width="100%" height="${height}">
+    <path d="M210 128 L210 80" stroke="#2F9E7D" stroke-width="4" stroke-linecap="round"/>
+    ${paths}
+    ${nodes}
+    <circle cx="210" cy="128" r="5" fill="#E8A33D"/>
+  </svg>`;
+}
+
+/* ============================================================
+   LIVE CLAUDE API — deeper personalised advice
+   ============================================================ */
+async function getDeepAdvice(career, buttonEl, slotEl){
+  buttonEl.disabled = true;
+  buttonEl.textContent = "Thinking...";
+  slotEl.innerHTML = `<div class="deep-advice loading">Putting together advice tailored to you...</div>`;
+
+  const subjectList = Array.from(state.subjects).join(', ');
+  const hobbyList = Array.from(state.hobbies).join(', ');
+  const extra = state.notes ? state.notes : "(no additional notes given)";
+
+  const prompt = `You are a warm, encouraging career guidance counsellor for Nigerian secondary school students.
+
+Student's favourite subjects: ${subjectList}
+Student's hobbies and interests: ${hobbyList}
+Anything else they shared: ${extra}
+
+Suggested pathway: ${career.name}
+
+Write a short, warm, specific paragraph (120-160 words) explaining why this pathway could suit THIS student in particular, referencing their actual subjects/interests where relevant. Then give 2-3 concrete, encouraging next steps they could take this term, appropriate for a Nigerian secondary school student (things like clubs to join, habits to build, free resources, people to talk to). Avoid generic filler. Keep the tone warm and plain, sentence case, no markdown symbols like asterisks or hashes.`;
+
+  try{
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-6",
+        max_tokens: 1000,
+        messages: [{ role: "user", content: prompt }]
+      })
+    });
+    const data = await response.json();
+    const textBlocks = (data.content || []).filter(b => b.type === "text").map(b => b.text);
+    const text = textBlocks.join("\n").trim();
+    slotEl.innerHTML = `<div class="deep-advice">${text || "No advice was returned. Please try again."}</div>`;
+  } catch(err){
+    slotEl.innerHTML = `<div class="deep-advice">We couldn't reach the advice service right now. The information above is still a solid starting point &mdash; please try again shortly.</div>`;
+  } finally {
+    buttonEl.textContent = "Get deeper advice ✨";
+    buttonEl.disabled = false;
+  }
+}
+
+/* ============================================================
+   ROUTER
+   ============================================================ */
+function render(){
+  if(state.step === 0) renderWelcome();
+  else if(state.step === 1) renderSubjects();
+  else if(state.step === 2) renderHobbies();
+  else renderResults();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+render();
+</script>
+</body>
+</html>
