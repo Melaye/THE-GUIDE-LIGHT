@@ -786,7 +786,7 @@ Write a short, warm, specific paragraph (120-160 words) explaining why this path
     const text = textBlocks.join("\n").trim();
     slotEl.innerHTML = `<div class="deep-advice">${text || "No advice was returned. Please try again."}</div>`;
   } catch(err){
-    slotEl.innerHTML = `<div class="deep-advice">We couldn't reach the advice service right now. The information above is still a solid starting point &mdash; please try again shortly.</div>`;
+    slotEl.innerHTML = `<div class="deep-advice">We couldn't reach the advice service right now. Please visit your school counselor or carreer coach for further assistance.</div>`;
   } finally {
     buttonEl.textContent = "Get deeper advice ✨";
     buttonEl.disabled = false;
